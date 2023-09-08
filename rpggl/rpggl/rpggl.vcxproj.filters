@@ -22,4 +22,21 @@
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Shader.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Vertex.glsl" />
+    <None Include="Shaders\Fragment.glsl" />
+    <None Include="Shaders\LightFragment.glsl" />
+    <None Include="Shaders\LightVertex.glsl" />
+  </ItemGroup>
 </Project>
