@@ -1,0 +1,10 @@
+﻿################################################################################
+# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
+################################################################################
+
+/rpggl/.vs/rpggl/FileContentIndex/afcbab60-6665-45f0-a7b7-8d4d9e2f0629.vsidx
+/rpggl/.vs/rpggl/FileContentIndex/56d2194f-3af6-4cf9-977f-61c0256655b4.vsidx
+/rpggl/.vs/rpggl/v17/ipch/AutoPCH/70613d1dba429955/GLAD.ipch
+/rpggl/.vs/rpggl/v17/ipch/AutoPCH/e14485c5d354a7b2/MAIN.ipch
+/rpggl/.vs/rpggl/v17/.suo
+/rpggl/.vs/rpggl/v17/Browse.VC.db
