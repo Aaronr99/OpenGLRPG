@@ -7,12 +7,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "camera.h"
 #include "Model.h"
-
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
+#include "Grid.h"
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -24,6 +19,11 @@ bool firstMouse = true;
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
 
 void processInput(GLFWwindow* window)
 {
@@ -103,7 +103,7 @@ unsigned int loadTexture(char const* path)
 	return textureID;
 }
 
-void SetupOpenGL() 
+void SetupOpenGL()
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -136,10 +136,11 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	Shader colorShader("Shaders/Vertex.glsl", "Shaders/Fragment.glsl"); 
+	Shader colorShader("Shaders/Vertex.glsl", "Shaders/Fragment.glsl");
 
 	Model ourModel("Visuals/SimpleCharacter/simpleCharacter.obj");
 
+	Grid grid(10, 10);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -161,10 +162,11 @@ int main()
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));	// it's a bit too big for our scene, so scale it down
 		colorShader.setMat4("model", model);
 		ourModel.Draw(colorShader);
 
+		grid.DrawGrid(colorShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
