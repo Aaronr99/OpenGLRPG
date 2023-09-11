@@ -1,4 +1,4 @@
-#pragma once // Directiva para evitar inclusión múltiple
+#pragma once
 
 #include <glad/glad.h>
 #include "Shader.h"
@@ -8,12 +8,10 @@
 
 struct Grid {
     Grid(const int gridSizeX, const int gridSizeY);
-    void DrawGrid(Shader shader);
     int sizeX, sizeY;
     unsigned int VAO, VBO;
     float vertices[24];
     std::vector<glm::mat4> modelMatrices;
-
-private:
+    void DrawGrid(Shader shader);
     std::vector<glm::mat4> GenerateGrid();
 };

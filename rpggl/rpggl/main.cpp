@@ -8,6 +8,8 @@
 #include "camera.h"
 #include "Model.h"
 #include "Grid.h"
+#include <chrono>
+#include <thread>
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -17,8 +19,13 @@ float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
+const int TICKS_PER_SECOND = 60;
+const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+const int MAX_FRAMESKIP = 10;
+float deltaTime;
+
+
+bool game_is_running = true;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -142,14 +149,34 @@ int main()
 
 	Grid grid(10, 10);
 
-	while (!glfwWindowShouldClose(window))
+	auto next_game_tick = std::chrono::high_resolution_clock::now();
+	int loops;
+	auto lastFrameTime = std::chrono::high_resolution_clock::now();
+
+	while (game_is_running && !glfwWindowShouldClose(window))
 	{
-		float currentFrame = static_cast<float>(glfwGetTime());
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+		loops = 0;
+
+		auto currentFrameTime = std::chrono::high_resolution_clock::now();
+		deltaTime = std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
+		lastFrameTime = currentFrameTime;
 
 		processInput(window);
+		while (std::chrono::high_resolution_clock::now() > next_game_tick && loops < MAX_FRAMESKIP) {
+			//Update Game
 
+
+
+
+
+
+
+
+			next_game_tick += std::chrono::milliseconds(SKIP_TICKS);
+			loops++;
+		}
+
+		//Render Game
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -168,11 +195,11 @@ int main()
 
 		grid.DrawGrid(colorShader);
 
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 	glfwTerminate();
 	return 0;
 }
-
 
