@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 #include "Shader.h"
 #include <vector>
-#include "glm/glm.hpp"
 #include <glm/ext/matrix_transform.hpp>
 
 struct Grid {

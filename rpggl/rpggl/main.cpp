@@ -1,15 +1,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "Shader.h"
+
 #include <iostream>
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
 #include "camera.h"
-#include "Model.h"
 #include "Grid.h"
 #include <chrono>
 #include <thread>
+
+#include "GameObject.h"
+
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -73,7 +72,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
-unsigned int loadTexture(char const* path)
+/*unsigned int loadTexture(char const* path)
 {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
@@ -108,7 +107,7 @@ unsigned int loadTexture(char const* path)
 	}
 
 	return textureID;
-}
+}*/
 
 void SetupOpenGL()
 {
@@ -144,8 +143,11 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	Shader colorShader("Shaders/Vertex.glsl", "Shaders/Fragment.glsl");
-
 	Model ourModel("Visuals/SimpleCharacter/simpleCharacter.obj");
+	Transform transform;
+	GameObject character(ourModel, colorShader);
+	character.transform.position = glm::vec3(0.0f);
+	character.transform.scale = glm::vec3(1.0f);
 
 	Grid grid(10, 10);
 
@@ -161,16 +163,9 @@ int main()
 		deltaTime = std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
 		lastFrameTime = currentFrameTime;
 
-		processInput(window);
 		while (std::chrono::high_resolution_clock::now() > next_game_tick && loops < MAX_FRAMESKIP) {
 			//Update Game
-
-
-
-
-
-
-
+			processInput(window);
 
 			next_game_tick += std::chrono::milliseconds(SKIP_TICKS);
 			loops++;
@@ -187,14 +182,8 @@ int main()
 		colorShader.setMat4("projection", projection);
 		colorShader.setMat4("view", view);
 
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));	// it's a bit too big for our scene, so scale it down
-		colorShader.setMat4("model", model);
-		ourModel.Draw(colorShader);
-
+		character.Render();
 		grid.DrawGrid(colorShader);
-
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
