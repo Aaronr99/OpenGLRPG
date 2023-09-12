@@ -6,6 +6,8 @@
 #include "Grid.h"
 #include <chrono>
 #include <thread>
+#include <memory>
+#include <unordered_map>
 
 #include "GameObject.h"
 
@@ -13,7 +15,7 @@
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 5.0f, 5.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -23,8 +25,33 @@ const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
 const int MAX_FRAMESKIP = 10;
 float deltaTime;
 
-
 bool game_is_running = true;
+
+std::unique_ptr<GameObject> mainCharacter;
+
+// Definir un mapa para rastrear el estado de las teclas
+std::unordered_map<int, bool> keyState;
+
+// Función para detectar cuándo una tecla se presiona por primera vez
+bool GetKeyDown(int keyCode)
+{
+	if (keyState.find(keyCode) != keyState.end() && keyState[keyCode])
+	{
+		keyState[keyCode] = false; // Restablecer el estado de la tecla
+		return true;
+	}
+	return false;
+}
+
+// Callback para manejar el evento de teclado
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (action == GLFW_PRESS)
+	{
+		keyState[key] = true; // Marcar la tecla como presionada
+	}
+}
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -32,18 +59,32 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 void processInput(GLFWwindow* window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+{	
+	if (GetKeyDown(GLFW_KEY_ESCAPE)) 
+	{
 		glfwSetWindowShouldClose(window, true);
+	}
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camera.ProcessKeyboard(FORWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera.ProcessKeyboard(BACKWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		camera.ProcessKeyboard(LEFT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		camera.ProcessKeyboard(RIGHT, deltaTime);
+	glm::vec3 previousPos = mainCharacter->transform.position;
+	if (GetKeyDown(GLFW_KEY_W))
+	{
+		mainCharacter->transform.Move(previousPos + glm::vec3(0.0f, 0.0f, -1.0f));
+	}
+
+	if (GetKeyDown(GLFW_KEY_S))
+	{
+		mainCharacter->transform.Move(previousPos + glm::vec3(0.0f, 0.0f, 1.0f));
+	}
+
+	if (GetKeyDown(GLFW_KEY_A))
+	{
+		mainCharacter->transform.Move(previousPos + glm::vec3(-1.0f, 0.0f, 0.0f));
+	}
+
+	if (GetKeyDown(GLFW_KEY_D))
+	{
+		mainCharacter->transform.Move(previousPos + glm::vec3(1.0f, 0.0f, 0.0f));
+	}
 }
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
@@ -131,7 +172,8 @@ int main()
 
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
+	//glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetKeyCallback(window, KeyCallback);
 	glfwSetScrollCallback(window, scroll_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -144,10 +186,9 @@ int main()
 
 	Shader colorShader("Shaders/Vertex.glsl", "Shaders/Fragment.glsl");
 	Model ourModel("Visuals/SimpleCharacter/simpleCharacter.obj");
-	Transform transform;
-	GameObject character(ourModel, colorShader);
-	character.transform.position = glm::vec3(0.0f);
-	character.transform.scale = glm::vec3(1.0f);
+	Renderer renderer(ourModel, colorShader);
+	Transform transform(glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(2.5f));
+	mainCharacter = std::make_unique<GameObject>(transform, renderer); 
 
 	Grid grid(10, 10);
 
@@ -166,7 +207,6 @@ int main()
 		while (std::chrono::high_resolution_clock::now() > next_game_tick && loops < MAX_FRAMESKIP) {
 			//Update Game
 			processInput(window);
-
 			next_game_tick += std::chrono::milliseconds(SKIP_TICKS);
 			loops++;
 		}
@@ -182,7 +222,7 @@ int main()
 		colorShader.setMat4("projection", projection);
 		colorShader.setMat4("view", view);
 
-		character.Render();
+		mainCharacter->Render();
 		grid.DrawGrid(colorShader);
 
 		glfwSwapBuffers(window);
