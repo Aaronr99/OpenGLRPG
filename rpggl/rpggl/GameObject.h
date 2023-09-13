@@ -58,8 +58,8 @@ struct GameObject {
 	GameObject(Model& model, Shader& shader)
 		: renderer(model, shader), transform() {}
 
-	void Update();
-	void Render();
+	virtual void Update();
+	virtual void Render();
 
 	/*void Move(glm::vec3 destiny, float time);
 	void Rotate(glm::vec3 destiny, float time);

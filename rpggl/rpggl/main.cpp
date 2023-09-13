@@ -12,6 +12,8 @@
 #include "GameObject.h"
 #include "InputManager.h"
 
+#include "GameObjects/MainCharacter.h"
+
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -28,7 +30,7 @@ float deltaTime;
 
 bool game_is_running = true;
 
-std::unique_ptr<GameObject> mainCharacter;
+std::unique_ptr<MainCharacter> mainCharacter;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -110,7 +112,7 @@ int main()
 {
 	SetupOpenGL();
 
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Unity Destroyer", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -121,7 +123,8 @@ int main()
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	//glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetKeyCallback(window, KeyCallback);
+	glfwSetWindowUserPointer(window, &g_InputManager);
+	glfwSetKeyCallback(window, InputManager::KeyCallback);
 	glfwSetScrollCallback(window, scroll_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -136,7 +139,7 @@ int main()
 	Model ourModel("Visuals/SimpleCharacter/simpleCharacter.obj");
 	Renderer renderer(ourModel, colorShader);
 	Transform transform(glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(2.5f));
-	mainCharacter = std::make_unique<GameObject>(transform, renderer); 
+	mainCharacter = std::make_unique<MainCharacter>(transform, renderer); 
 
 	Grid grid(10, 10);
 
@@ -152,9 +155,16 @@ int main()
 		deltaTime = std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
 		lastFrameTime = currentFrameTime;
 
+		if (g_InputManager.GetKeyDown(GLFW_KEY_ESCAPE))
+		{
+			glfwSetWindowShouldClose(window, true);
+		}
+
 		while (std::chrono::high_resolution_clock::now() > next_game_tick && loops < MAX_FRAMESKIP) {
 			//Update Game
-			processInput(window);
+			//processInput(window);
+
+			mainCharacter->Update();
 			next_game_tick += std::chrono::milliseconds(SKIP_TICKS);
 			loops++;
 		}
