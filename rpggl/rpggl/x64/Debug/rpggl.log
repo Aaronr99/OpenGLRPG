@@ -1,9 +1,2 @@
-﻿  glad.c
-  GameObject.cpp
-  Grid.cpp
-  InputManager.cpp
-  main.cpp
-  MainCharacter.cpp
-  Model.cpp
-  Generando código...
+﻿  CameraManager.cpp
   rpggl.vcxproj -> C:\Proyectos\OpenGLRPG\rpggl\x64\Debug\rpggl.exe

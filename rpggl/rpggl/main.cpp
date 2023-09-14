@@ -13,6 +13,7 @@
 #include "InputManager.h"
 
 #include "GameObjects/MainCharacter.h"
+#include "GameObjects/CameraManager.h"
 
 
 const unsigned int SCR_WIDTH = 800;
@@ -139,7 +140,9 @@ int main()
 	Model ourModel("Visuals/SimpleCharacter/simpleCharacter.obj");
 	Renderer renderer(ourModel, colorShader);
 	Transform transform(glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(2.5f));
-	mainCharacter = std::make_unique<MainCharacter>(transform, renderer); 
+	mainCharacter = std::make_unique<MainCharacter>(transform, renderer);
+
+	CameraManager cameraManager(colorShader, camera, SCR_WIDTH, SCR_HEIGHT, &mainCharacter->transform);
 
 	Grid grid(10, 10);
 
@@ -158,6 +161,7 @@ int main()
 		// Update
 		while (std::chrono::high_resolution_clock::now() > next_game_tick && loops < MAX_FRAMESKIP) {
 			mainCharacter->Update();
+			cameraManager.Update();
 			next_game_tick += std::chrono::milliseconds(SKIP_TICKS);
 			loops++;
 		}
@@ -168,10 +172,11 @@ int main()
 
 		colorShader.use();
 
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+		cameraManager.Render();
+		/*glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		colorShader.setMat4("projection", projection);
-		colorShader.setMat4("view", view);
+		colorShader.setMat4("view", view);*/
 
 		mainCharacter->Render();
 		grid.DrawGrid(colorShader);
