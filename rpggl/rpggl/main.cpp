@@ -155,21 +155,14 @@ int main()
 		deltaTime = std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
 		lastFrameTime = currentFrameTime;
 
-		if (g_InputManager.GetKeyDown(GLFW_KEY_ESCAPE))
-		{
-			glfwSetWindowShouldClose(window, true);
-		}
-
+		// Update
 		while (std::chrono::high_resolution_clock::now() > next_game_tick && loops < MAX_FRAMESKIP) {
-			//Update Game
-			//processInput(window);
-
 			mainCharacter->Update();
 			next_game_tick += std::chrono::milliseconds(SKIP_TICKS);
 			loops++;
 		}
 
-		//Render Game
+		// Render
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
