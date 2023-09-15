@@ -12,13 +12,13 @@ struct CameraManager
 {
 	unsigned int width;
 	unsigned int height;
-	Camera camera;
+	Camera* camera;
 	Shader shader;
 	Transform* targetTransform;
 	Transform previousTransform;
 	glm::vec3 offsetToTarget;
 
-	CameraManager(Shader& pShader, Camera& pCamera, int pWidth, int pHeight, Transform* pTarget) 
+	CameraManager(Shader& pShader, Camera* pCamera, int pWidth, int pHeight, Transform* pTarget) 
 	{
 		camera = pCamera;
 		width = pWidth;
@@ -26,7 +26,7 @@ struct CameraManager
 		shader = pShader;
 		targetTransform = pTarget;
 		previousTransform = Transform(*pTarget);
-		offsetToTarget = previousTransform.position - camera.Position;
+		offsetToTarget = previousTransform.position - camera->Position;
 	}
 
 	void Update();
