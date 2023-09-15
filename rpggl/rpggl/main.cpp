@@ -11,6 +11,7 @@
 
 #include "GameObject.h"
 #include "InputManager.h"
+#include "Primitives.h"
 
 #include "GameObjects/MainCharacter.h"
 #include "GameObjects/CameraManager.h"
@@ -121,6 +122,7 @@ int main()
 		return -1;
 	}
 
+
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	//glfwSetCursorPosCallback(window, mouse_callback);
@@ -135,7 +137,7 @@ int main()
 	}
 
 	glEnable(GL_DEPTH_TEST);
-
+	Shader lightCubeShader("Shaders/LightVertex.glsl", "Shaders/LightFragment.glsl");
 	Shader colorShader("Shaders/Vertex.glsl", "Shaders/Fragment.glsl");
 	Model ourModel("Visuals/SimpleCharacter/simpleCharacter.obj");
 	Renderer renderer(ourModel, colorShader);
@@ -145,6 +147,34 @@ int main()
 	CameraManager cameraManager(colorShader, camera, SCR_WIDTH, SCR_HEIGHT, &mainCharacter->transform);
 
 	Grid grid(10, 10);
+
+	std::vector<float> vertices = Primitives::GetCubeVertices();
+	// positions of the point lights
+	glm::vec3 pointLightPositions[] = {
+		glm::vec3(5.0f, 1.0f,  2.0f),
+		glm::vec3(-5.0f, 1.0f,  2.0f),
+		glm::vec3(5.0f, 1.0f,  -2.0f),
+		glm::vec3(-5.0f, 1.0f,  -2.0f)
+	};
+
+	unsigned int VBO;
+	glGenBuffers(1, &VBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+	// second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
+	unsigned int lightCubeVAO;
+	glGenVertexArrays(1, &lightCubeVAO);
+	glBindVertexArray(lightCubeVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// note that we update the lamp's position attribute's stride to reflect the updated buffer data
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	colorShader.use();
+	colorShader.setInt("material.diffuse", 0);
+	colorShader.setInt("numPointLights", 4);
 
 	auto next_game_tick = std::chrono::high_resolution_clock::now();
 	int loops;
@@ -157,6 +187,43 @@ int main()
 		auto currentFrameTime = std::chrono::high_resolution_clock::now();
 		deltaTime = std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
 		lastFrameTime = currentFrameTime;
+
+		colorShader.use();
+		colorShader.setVec3("viewPos", camera.Position);
+		colorShader.setFloat("material.shininess", 32.0f);
+
+		// directional light
+		colorShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+		colorShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+		colorShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+		// point light 1
+		colorShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+		colorShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+		colorShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+		colorShader.setFloat("pointLights[0].constant", 1.0f);
+		colorShader.setFloat("pointLights[0].linear", 0.09f);
+		colorShader.setFloat("pointLights[0].quadratic", 0.032f);
+		// point light 2
+		colorShader.setVec3("pointLights[1].position", pointLightPositions[1]);
+		colorShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+		colorShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+		colorShader.setFloat("pointLights[1].constant", 1.0f);
+		colorShader.setFloat("pointLights[1].linear", 0.09f);
+		colorShader.setFloat("pointLights[1].quadratic", 0.032f);
+		// point light 3
+		colorShader.setVec3("pointLights[2].position", pointLightPositions[2]);
+		colorShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+		colorShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+		colorShader.setFloat("pointLights[2].constant", 1.0f);
+		colorShader.setFloat("pointLights[2].linear", 0.09f);
+		colorShader.setFloat("pointLights[2].quadratic", 0.032f);
+		// point light 4
+		colorShader.setVec3("pointLights[3].position", pointLightPositions[3]);
+		colorShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+		colorShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+		colorShader.setFloat("pointLights[3].constant", 1.0f);
+		colorShader.setFloat("pointLights[3].linear", 0.09f);
+		colorShader.setFloat("pointLights[3].quadratic", 0.032f);
 
 		// Update
 		while (std::chrono::high_resolution_clock::now() > next_game_tick && loops < MAX_FRAMESKIP) {
@@ -173,13 +240,24 @@ int main()
 		colorShader.use();
 
 		cameraManager.Render();
-		/*glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-		glm::mat4 view = camera.GetViewMatrix();
-		colorShader.setMat4("projection", projection);
-		colorShader.setMat4("view", view);*/
-
 		mainCharacter->Render();
 		grid.DrawGrid(colorShader);
+
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+		glm::mat4 view = camera.GetViewMatrix();
+		lightCubeShader.use();
+		lightCubeShader.setMat4("projection", projection);
+		lightCubeShader.setMat4("view", view);
+		// we now draw as many light bulbs as we have point lights.
+		glBindVertexArray(lightCubeVAO);
+		for (unsigned int i = 0; i < 4; i++)
+		{
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, pointLightPositions[i]);
+			model = glm::scale(model, glm::vec3(0.5f)); // Make it a smaller cube
+			lightCubeShader.setMat4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
