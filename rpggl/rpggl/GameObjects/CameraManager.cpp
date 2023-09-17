@@ -6,7 +6,7 @@ void CameraManager::Update(float deltaTime)
 	{
 		camera->Position = targetTransform->position - offsetToTarget;
 		previousTransform.position = targetTransform->position;
-		camera->SetTarget(targetTransform->position, 10.0f, horizontalAngle);
+		camera->SetTarget(targetTransform->position, horizontalAngle);
 	}
 
 	// En el bucle de juego, llama a OrbitAroundTarget para que la cámara orbite alrededor del objetivo.

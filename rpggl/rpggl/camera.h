@@ -9,6 +9,7 @@
 
 #include <vector>
 
+const float RADIUS = 10.0f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
 
@@ -25,19 +26,13 @@ public:
 	glm::vec3 Target;
 	float MouseSensitivity;
 	float Zoom;
+	float Radius;
 
-	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f)) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f)) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), Radius(RADIUS)
 	{
 		Position = position;
 		WorldUp = up;
 		Target = target;
-		updateCameraVectors();
-	}
-
-	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
-	{
-		Position = glm::vec3(posX, posY, posZ);
-		WorldUp = glm::vec3(upX, upY, upZ);
 		updateCameraVectors();
 	}
 
@@ -46,16 +41,16 @@ public:
 		return glm::lookAt(Position, Position + Front, Up);
 	}
 
-	void SetTarget(glm::vec3 target, float radius)
+	void SetTarget(glm::vec3 target)
 	{
 		Target = target;
-		OrbitAroundTarget(target, 10.0, 0.0);
+		OrbitAroundTarget(target, Radius, 0.0f);
 	}
 
-	void SetTarget(glm::vec3 target, float radius, float horizontalAngle)
+	void SetTarget(glm::vec3 target, float horizontalAngle)
 	{
 		Target = target;
-		OrbitAroundTarget(target, 10.0, horizontalAngle);
+		OrbitAroundTarget(target, Radius, horizontalAngle);
 	}
 
 	void OrbitAroundTarget(glm::vec3 target, float radius, float horizontalAngle)

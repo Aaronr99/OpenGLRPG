@@ -160,7 +160,7 @@ int main()
 	int loops;
 	auto lastFrameTime = std::chrono::high_resolution_clock::now();
 
-	camera.SetTarget(mainCharacter->transform.position, 10.0f, 0.0f);
+	camera.SetTarget(mainCharacter->transform.position, 0.0f);
 
 	while (game_is_running && !glfwWindowShouldClose(window))
 	{
