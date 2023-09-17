@@ -229,7 +229,7 @@ int main()
 		// Update
 		while (std::chrono::high_resolution_clock::now() > next_game_tick && loops < MAX_FRAMESKIP) {
 			mainCharacter->Update();
-			cameraManager.Update();
+			cameraManager.Update(deltaTime);
 			next_game_tick += std::chrono::milliseconds(SKIP_TICKS);
 			loops++;
 		}

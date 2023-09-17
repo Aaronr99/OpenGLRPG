@@ -1,6 +1,6 @@
 #include "CameraManager.h"
 
-void CameraManager::Update()
+void CameraManager::Update(float deltaTime)
 {
 	if (targetTransform->position != previousTransform.position)
 	{
@@ -15,12 +15,12 @@ void CameraManager::Update()
 
 	if (g_InputManager.GetKey(GLFW_KEY_Q))
 	{
-		horizontalAngle += glfwGetTime() * 5.0f;
+		horizontalAngle += deltaTime * 200.0f;
 		camera->OrbitAroundTarget(targetTransform->position, radius, horizontalAngle);
 	}
 	else if (g_InputManager.GetKey(GLFW_KEY_E))
 	{
-		horizontalAngle -= glfwGetTime() * 5.0f;
+		horizontalAngle -= deltaTime * 200.0f;
 		camera->OrbitAroundTarget(targetTransform->position, radius, horizontalAngle);
 	}
 }
