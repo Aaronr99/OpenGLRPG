@@ -9,6 +9,7 @@
 #include "../GameObject.h"
 #include "../InputManager.h"
 
+
 struct CameraManager
 {
 	unsigned int width;
@@ -35,4 +36,7 @@ struct CameraManager
 	void Update(float deltaTime);
 	void Render();
 };
+
+
+
 

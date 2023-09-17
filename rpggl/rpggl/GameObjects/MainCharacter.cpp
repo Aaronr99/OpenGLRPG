@@ -4,6 +4,10 @@ void DebugPosition(glm::vec3 position);
 
 void MainCharacter::Update() {
 	glm::vec3 previousPos = transform.position;
+
+	glm::vec3 front = glm::normalize( camera->Front);
+	glm::vec3 right = glm::normalize(camera->Right);
+
 	if (g_InputManager.GetKeyDown(GLFW_KEY_W))
 	{
 		transform.Move(previousPos + glm::vec3(0.0f, 0.0f, -1.0f));

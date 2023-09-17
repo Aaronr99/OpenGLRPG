@@ -121,7 +121,7 @@ int main()
 	Model ourModel("Visuals/SimpleCharacter/simpleCharacter.obj");
 	Renderer renderer(ourModel, colorShader);
 	Transform transform(glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(2.5f));
-	mainCharacter = std::make_unique<MainCharacter>(transform, renderer);
+	mainCharacter = std::make_unique<MainCharacter>(transform, renderer, &camera);
 
 	CameraManager cameraManager(colorShader, &camera, SCR_WIDTH, SCR_HEIGHT, &mainCharacter->transform);
 

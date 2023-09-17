@@ -9,9 +9,7 @@ void CameraManager::Update(float deltaTime)
 		camera->SetTarget(targetTransform->position, horizontalAngle);
 	}
 
-	// En el bucle de juego, llama a OrbitAroundTarget para que la cámara orbite alrededor del objetivo.
 	float radius = 10.0f;
-	//float horizontalAngle = glfwGetTime();
 	float newAngle = 0.0f;
 
 	if (g_InputManager.GetKey(GLFW_KEY_Q))
