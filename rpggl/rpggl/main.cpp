@@ -39,27 +39,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
-{
-	float xpos = static_cast<float>(xposIn);
-	float ypos = static_cast<float>(yposIn);
-
-	if (firstMouse)
-	{
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
-	}
-
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-	lastX = xpos;
-	lastY = ypos;
-
-	camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera.ProcessMouseScroll(static_cast<float>(yoffset));
@@ -181,6 +160,8 @@ int main()
 	int loops;
 	auto lastFrameTime = std::chrono::high_resolution_clock::now();
 
+	camera.SetTarget(mainCharacter->transform.position, 10.0f, 0.0f);
+
 	while (game_is_running && !glfwWindowShouldClose(window))
 	{
 		loops = 0;
@@ -253,11 +234,11 @@ int main()
 		glBindVertexArray(lightCubeVAO);
 		//for (unsigned int i = 0; i < 4; i++)
 		//{
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, pointLightPositions[0]);
-			model = glm::scale(model, glm::vec3(0.5f)); // Make it a smaller cube
-			lightCubeShader.setMat4("model", model);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, pointLightPositions[0]);
+		model = glm::scale(model, glm::vec3(0.5f)); // Make it a smaller cube
+		lightCubeShader.setMat4("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 		//}
 		glBindVertexArray(0);
 
