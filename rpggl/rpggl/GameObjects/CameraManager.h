@@ -7,6 +7,7 @@
 #include "../camera.h"
 #include "../Shader.h"
 #include "../GameObject.h"
+#include "../InputManager.h"
 
 struct CameraManager
 {
@@ -17,6 +18,7 @@ struct CameraManager
 	Transform* targetTransform;
 	Transform previousTransform;
 	glm::vec3 offsetToTarget;
+	float horizontalAngle;
 
 	CameraManager(Shader& pShader, Camera* pCamera, int pWidth, int pHeight, Transform* pTarget) 
 	{
@@ -27,6 +29,7 @@ struct CameraManager
 		targetTransform = pTarget;
 		previousTransform = Transform(*pTarget);
 		offsetToTarget = previousTransform.position - camera->Position;
+		horizontalAngle = 0.0f;
 	}
 
 	void Update();

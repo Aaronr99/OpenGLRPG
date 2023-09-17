@@ -121,7 +121,7 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
-
+	g_InputManager.window = window;
 
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);

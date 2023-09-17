@@ -1,11 +1,27 @@
 #include "CameraManager.h"
 
-void CameraManager::Update() 
+void CameraManager::Update()
 {
-	if (targetTransform->position != previousTransform.position) 
+	if (targetTransform->position != previousTransform.position)
 	{
 		camera->Position = targetTransform->position - offsetToTarget;
 		previousTransform.position = targetTransform->position;
+	}
+
+	// En el bucle de juego, llama a OrbitAroundTarget para que la cámara orbite alrededor del objetivo.
+	float radius = 10.0f;
+	//float horizontalAngle = glfwGetTime();
+	float newAngle = 0.0f;
+
+	if (g_InputManager.GetKey(GLFW_KEY_Q))
+	{
+		horizontalAngle += glfwGetTime() * 5.0f;
+		camera->OrbitAroundTarget(targetTransform->position, radius, horizontalAngle);
+	}
+	else if (g_InputManager.GetKey(GLFW_KEY_E))
+	{
+		horizontalAngle -= glfwGetTime() * 5.0f;
+		camera->OrbitAroundTarget(targetTransform->position, radius, horizontalAngle);
 	}
 }
 

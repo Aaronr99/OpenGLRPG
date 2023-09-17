@@ -1,2 +1,4 @@
-﻿  main.cpp
+﻿  CameraManager.cpp
+C:\Proyectos\OpenGLRPG\rpggl\rpggl\GameObjects\CameraManager.cpp(18,36): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Proyectos\OpenGLRPG\rpggl\rpggl\GameObjects\CameraManager.cpp(23,36): warning C4244: '-=': conversión de 'double' a 'float'; posible pérdida de datos
   rpggl.vcxproj -> C:\Proyectos\OpenGLRPG\rpggl\x64\Debug\rpggl.exe
