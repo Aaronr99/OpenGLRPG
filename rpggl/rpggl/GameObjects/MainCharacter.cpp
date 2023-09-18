@@ -2,6 +2,7 @@
 
 void DebugPosition(glm::vec3 position);
 glm::vec3 NormalizeToOneComponent(const glm::vec3& inputVec3);
+glm::vec3 ObtainLookRotation(glm::vec3 from, glm::vec3 to);
 
 void MainCharacter::Update() {
 	glm::vec3 previousPos = transform.position;
@@ -12,32 +13,53 @@ void MainCharacter::Update() {
 	if (g_InputManager.GetKeyDown(GLFW_KEY_W))
 	{
 		transform.Move(previousPos + front);
-		//transform.Rotate(glm::vec3(0.0f, 0.0f, 0.0f));
 		DebugPosition(transform.position);
+		glm::vec3 eulerRotation = ObtainLookRotation(previousPos, transform.position);
+		transform.Rotate(-eulerRotation);
 	}
 	if (g_InputManager.GetKeyDown(GLFW_KEY_S))
 	{
 		transform.Move(previousPos - front);
-		//transform.Rotate(glm::vec3(0.0f, 180.0f, 0.0f));
 		DebugPosition(transform.position);
+		glm::vec3 eulerRotation = ObtainLookRotation(previousPos, transform.position);
+		transform.Rotate(-eulerRotation);
 	}
 	if (g_InputManager.GetKeyDown(GLFW_KEY_A))
 	{
 		transform.Move(previousPos - right);
-		//transform.Rotate(glm::vec3(0.0f, 90.0f, 0.0f));
 		DebugPosition(transform.position);
+		glm::vec3 eulerRotation = ObtainLookRotation(previousPos, transform.position);
+		transform.Rotate(-eulerRotation);
 	}
 	if (g_InputManager.GetKeyDown(GLFW_KEY_D))
 	{
 		transform.Move(previousPos + right);
-		//transform.Rotate(glm::vec3(0.0f, -90.0f, 0.0f));
 		DebugPosition(transform.position);
+		glm::vec3 eulerRotation = ObtainLookRotation(previousPos, transform.position);
+		transform.Rotate(-eulerRotation);
 	}
 }
 
 void DebugPosition(glm::vec3 position)
 {
 	std::cout << "Position: (" << position.x << ", " << position.y << ", " << position.z << ")" << std::endl;
+}
+
+glm::vec3 ObtainLookRotation(glm::vec3 from, glm::vec3 to)
+{
+	// Calcula la dirección hacia la que quieres mirar
+	glm::vec3 direction = glm::normalize(to - from);
+
+	// Usa glm::lookAt para crear una matriz de vista
+	glm::mat4 viewMatrix = glm::lookAt(from, to, glm::vec3(0.0f, 1.0f, 0.0f));
+
+	// Extrae la rotación de la matriz de vista
+	glm::quat rotation = glm::quat_cast(viewMatrix);
+
+	// Convierte la rotación a grados si lo deseas
+	glm::vec3 eulerRotation = glm::degrees(glm::eulerAngles(rotation));
+
+	return eulerRotation;
 }
 
 glm::vec3 NormalizeToOneComponent(const glm::vec3& inputVec3)

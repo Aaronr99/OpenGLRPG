@@ -7,6 +7,7 @@
 struct MainCharacter : GameObject
 {
 	Camera* camera;
+
 	MainCharacter(const Transform& transform, const Renderer& renderer, Camera* pCamera) : GameObject(transform, renderer) 
 	{
 		camera = pCamera;
