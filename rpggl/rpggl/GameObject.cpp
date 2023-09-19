@@ -28,12 +28,15 @@ void Transform::Scale(glm::vec3 destiny)
 	Actualize();
 }
 
-void GameObject::Update()
+void GameObject::Awake()
 {
 
 }
 
+void GameObject::Update()
+{
 
+}
 
 void GameObject::Render()
 {

@@ -144,8 +144,10 @@
     <ClCompile Include="..\glad.c" />
     <ClCompile Include="GameObjects\CameraManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GlobalData.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="GameObjects\LightObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObjects\MainCharacter.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -154,9 +156,11 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="GameObjects\CameraManager.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GlobalData.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="GameObjects\MainCharacter.h" />
+    <ClInclude Include="GameObjects\LightObject.h" />
     <ClInclude Include="Primitives.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />

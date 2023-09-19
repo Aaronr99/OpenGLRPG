@@ -58,6 +58,7 @@ struct GameObject {
 	GameObject(Model& model, Shader& shader)
 		: renderer(model, shader), transform() {}
 
+	virtual void Awake();
 	virtual void Update();
 	virtual void Render();
 

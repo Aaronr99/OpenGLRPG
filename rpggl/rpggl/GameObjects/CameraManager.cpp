@@ -12,12 +12,12 @@ void CameraManager::Update(float deltaTime)
 	float radius = 10.0f;
 	float newAngle = 0.0f;
 
-	if (g_InputManager.GetKey(GLFW_KEY_Q))
+	if (GlobalData::inputManager.GetKey(GLFW_KEY_Q))
 	{
 		horizontalAngle += deltaTime * 200.0f;
 		camera->OrbitAroundTarget(targetTransform->position, radius, horizontalAngle);
 	}
-	else if (g_InputManager.GetKey(GLFW_KEY_E))
+	else if (GlobalData::inputManager.GetKey(GLFW_KEY_E))
 	{
 		horizontalAngle -= deltaTime * 200.0f;
 		camera->OrbitAroundTarget(targetTransform->position, radius, horizontalAngle);

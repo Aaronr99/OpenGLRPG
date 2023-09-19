@@ -10,28 +10,28 @@ void MainCharacter::Update() {
 	glm::vec3 front = NormalizeToOneComponent(camera->Front);
 	glm::vec3 right = NormalizeToOneComponent(camera->Right);
 
-	if (g_InputManager.GetKeyDown(GLFW_KEY_W))
+	if (GlobalData::inputManager.GetKeyDown(GLFW_KEY_W))
 	{
 		transform.Move(previousPos + front);
 		DebugPosition(transform.position);
 		glm::vec3 eulerRotation = ObtainLookRotation(previousPos, transform.position);
 		transform.Rotate(-eulerRotation);
 	}
-	if (g_InputManager.GetKeyDown(GLFW_KEY_S))
+	if (GlobalData::inputManager.GetKeyDown(GLFW_KEY_S))
 	{
 		transform.Move(previousPos - front);
 		DebugPosition(transform.position);
 		glm::vec3 eulerRotation = ObtainLookRotation(previousPos, transform.position);
 		transform.Rotate(-eulerRotation);
 	}
-	if (g_InputManager.GetKeyDown(GLFW_KEY_A))
+	if (GlobalData::inputManager.GetKeyDown(GLFW_KEY_A))
 	{
 		transform.Move(previousPos - right);
 		DebugPosition(transform.position);
 		glm::vec3 eulerRotation = ObtainLookRotation(previousPos, transform.position);
 		transform.Rotate(-eulerRotation);
 	}
-	if (g_InputManager.GetKeyDown(GLFW_KEY_D))
+	if (GlobalData::inputManager.GetKeyDown(GLFW_KEY_D))
 	{
 		transform.Move(previousPos + right);
 		DebugPosition(transform.position);

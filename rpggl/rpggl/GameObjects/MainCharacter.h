@@ -2,6 +2,7 @@
 #include "../GameObject.h"
 #include "../InputManager.h"
 #include "../camera.h"
+#include "../GlobalData.h"
 
 
 struct MainCharacter : GameObject

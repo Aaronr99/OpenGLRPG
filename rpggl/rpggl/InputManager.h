@@ -16,6 +16,3 @@ struct InputManager {
 	bool GetKeyDown(int keyCode);
 	static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 };
-
-
-extern InputManager g_InputManager;

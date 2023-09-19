@@ -8,6 +8,7 @@
 #include "../Shader.h"
 #include "../GameObject.h"
 #include "../InputManager.h"
+#include "../GlobalData.h"
 
 
 struct CameraManager

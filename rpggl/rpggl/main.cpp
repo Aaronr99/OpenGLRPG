@@ -16,13 +16,10 @@
 #include "GameObjects/MainCharacter.h"
 #include "GameObjects/CameraManager.h"
 
+#include "GlobalData.h"
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
-Camera camera(glm::vec3(0.0f, 5.0f, 5.0f));
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
+float lastX = GlobalData::SCR_WIDTH / 2.0f;
+float lastY = GlobalData::SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
 const int TICKS_PER_SECOND = 60;
@@ -41,7 +38,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	camera.ProcessMouseScroll(static_cast<float>(yoffset));
+	GlobalData::camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
 /*unsigned int loadTexture(char const* path)
@@ -93,19 +90,19 @@ int main()
 {
 	SetupOpenGL();
 
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Unity Destroyer", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(GlobalData::SCR_WIDTH, GlobalData::SCR_HEIGHT, "Unity Destroyer", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
-	g_InputManager.window = window;
+	GlobalData::inputManager.window = window;
 
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	//glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetWindowUserPointer(window, &g_InputManager);
+	glfwSetWindowUserPointer(window, &GlobalData::inputManager);
 	glfwSetKeyCallback(window, InputManager::KeyCallback);
 	glfwSetScrollCallback(window, scroll_callback);
 
@@ -121,9 +118,9 @@ int main()
 	Model ourModel("Visuals/SimpleCharacter/simpleCharacter.obj");
 	Renderer renderer(ourModel, colorShader);
 	Transform transform(glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(2.5f));
-	mainCharacter = std::make_unique<MainCharacter>(transform, renderer, &camera);
+	mainCharacter = std::make_unique<MainCharacter>(transform, renderer, &GlobalData::camera);
 
-	CameraManager cameraManager(colorShader, &camera, SCR_WIDTH, SCR_HEIGHT, &mainCharacter->transform);
+	CameraManager cameraManager(colorShader, &GlobalData::camera, GlobalData::SCR_WIDTH, GlobalData::SCR_HEIGHT, &mainCharacter->transform);
 
 	Grid grid(10, 10);
 
@@ -143,8 +140,7 @@ int main()
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-
-
+	
 	// note that we update the lamp's position attribute's stride to reflect the updated buffer data
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -160,7 +156,7 @@ int main()
 	int loops;
 	auto lastFrameTime = std::chrono::high_resolution_clock::now();
 
-	camera.SetTarget(mainCharacter->transform.position, 0.0f);
+	GlobalData::camera.SetTarget(mainCharacter->transform.position, 0.0f);
 
 	while (game_is_running && !glfwWindowShouldClose(window))
 	{
@@ -171,7 +167,7 @@ int main()
 		lastFrameTime = currentFrameTime;
 
 		colorShader.use();
-		colorShader.setVec3("viewPos", camera.Position);
+		colorShader.setVec3("viewPos", GlobalData::camera.Position);
 		colorShader.setFloat("material.shininess", 32.0f);
 
 		// directional light
@@ -226,20 +222,17 @@ int main()
 		grid.DrawGrid(colorShader);
 
 		lightCubeShader.use();
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-		glm::mat4 view = camera.GetViewMatrix();
+		glm::mat4 projection = glm::perspective(glm::radians(GlobalData::camera.Zoom), (float)GlobalData::SCR_WIDTH / (float)GlobalData::SCR_HEIGHT, 0.1f, 100.0f);
+		glm::mat4 view = GlobalData::camera.GetViewMatrix();
 		lightCubeShader.setMat4("projection", projection);
 		lightCubeShader.setMat4("view", view);
 		// we now draw as many light bulbs as we have point lights.
 		glBindVertexArray(lightCubeVAO);
-		//for (unsigned int i = 0; i < 4; i++)
-		//{
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, pointLightPositions[0]);
 		model = glm::scale(model, glm::vec3(0.5f)); // Make it a smaller cube
 		lightCubeShader.setMat4("model", model);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		//}
 		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);

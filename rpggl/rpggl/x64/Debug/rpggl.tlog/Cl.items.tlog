@@ -1,8 +1,10 @@
 C:\Proyectos\OpenGLRPG\rpggl\glad.c;C:\Proyectos\OpenGLRPG\rpggl\rpggl\x64\Debug\glad.obj
 C:\Proyectos\OpenGLRPG\rpggl\rpggl\GameObjects\CameraManager.cpp;C:\Proyectos\OpenGLRPG\rpggl\rpggl\x64\Debug\CameraManager.obj
 C:\Proyectos\OpenGLRPG\rpggl\rpggl\GameObject.cpp;C:\Proyectos\OpenGLRPG\rpggl\rpggl\x64\Debug\GameObject.obj
+C:\Proyectos\OpenGLRPG\rpggl\rpggl\GlobalData.cpp;C:\Proyectos\OpenGLRPG\rpggl\rpggl\x64\Debug\GlobalData.obj
 C:\Proyectos\OpenGLRPG\rpggl\rpggl\Grid.cpp;C:\Proyectos\OpenGLRPG\rpggl\rpggl\x64\Debug\Grid.obj
 C:\Proyectos\OpenGLRPG\rpggl\rpggl\InputManager.cpp;C:\Proyectos\OpenGLRPG\rpggl\rpggl\x64\Debug\InputManager.obj
+C:\Proyectos\OpenGLRPG\rpggl\rpggl\GameObjects\LightObject.cpp;C:\Proyectos\OpenGLRPG\rpggl\rpggl\x64\Debug\LightObject.obj
 C:\Proyectos\OpenGLRPG\rpggl\rpggl\main.cpp;C:\Proyectos\OpenGLRPG\rpggl\rpggl\x64\Debug\main.obj
 C:\Proyectos\OpenGLRPG\rpggl\rpggl\GameObjects\MainCharacter.cpp;C:\Proyectos\OpenGLRPG\rpggl\rpggl\x64\Debug\MainCharacter.obj
 C:\Proyectos\OpenGLRPG\rpggl\rpggl\Model.cpp;C:\Proyectos\OpenGLRPG\rpggl\rpggl\x64\Debug\Model.obj

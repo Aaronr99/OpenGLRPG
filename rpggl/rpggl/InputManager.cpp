@@ -21,5 +21,3 @@ void InputManager::KeyCallback(GLFWwindow* window, int key, int scancode, int ac
 		inputManager->keyState[key] = true; // Marcar la tecla como presionada
 	}
 }
-
-InputManager g_InputManager;
