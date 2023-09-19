@@ -13,24 +13,18 @@
 
 struct CameraManager
 {
-	unsigned int width;
-	unsigned int height;
-	Camera* camera;
 	Shader shader;
 	Transform* targetTransform;
 	Transform previousTransform;
 	glm::vec3 offsetToTarget;
 	float horizontalAngle;
 
-	CameraManager(Shader& pShader, Camera* pCamera, int pWidth, int pHeight, Transform* pTarget) 
+	CameraManager(Shader& pShader, Transform* pTarget) 
 	{
-		camera = pCamera;
-		width = pWidth;
-		height = pHeight;
 		shader = pShader;
 		targetTransform = pTarget;
 		previousTransform = Transform(*pTarget);
-		offsetToTarget = previousTransform.position - camera->Position;
+		offsetToTarget = previousTransform.position - GlobalData::camera.Position;
 		horizontalAngle = 0.0f;
 	}
 

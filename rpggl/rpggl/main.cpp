@@ -120,7 +120,7 @@ int main()
 	Transform transform(glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(2.5f));
 	mainCharacter = std::make_unique<MainCharacter>(transform, renderer, &GlobalData::camera);
 
-	CameraManager cameraManager(colorShader, &GlobalData::camera, GlobalData::SCR_WIDTH, GlobalData::SCR_HEIGHT, &mainCharacter->transform);
+	CameraManager cameraManager(colorShader, &mainCharacter->transform);
 
 	Grid grid(10, 10);
 
