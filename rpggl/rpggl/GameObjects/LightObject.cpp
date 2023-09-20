@@ -17,19 +17,31 @@ void LightObject::Awake()
 	glBindVertexArray(0);
 }
 
+void LightObject::Update()
+{
+	std::string pointIdentifier = "pointLights[" + std::to_string(lightID) + "]";
+	lightShader->use();
+	lightShader->setVec3(pointIdentifier + ".position", transform.position);
+	lightShader->setVec3(pointIdentifier + ".ambient", 0.05f, 0.05f, 0.05f);
+	lightShader->setVec3(pointIdentifier + ".diffuse", 0.8f, 0.8f, 0.8f);
+	lightShader->setFloat(pointIdentifier + ".constant", 1.0f);
+	lightShader->setFloat(pointIdentifier + ".linear", 0.09f);
+	lightShader->setFloat(pointIdentifier + ".quadratic", 0.032f);
+}
+
 void LightObject::Render()
 {
-	/*shader.use();
-	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-	glm::mat4 view = camera.GetViewMatrix();
-	shader.setMat4("projection", projection);
-	shader.setMat4("view", view);
+	objectShader.use();
+	glm::mat4 projection = glm::perspective(glm::radians(GlobalData::camera.Zoom), (float)GlobalData::SCR_WIDTH / (float)GlobalData::SCR_HEIGHT, 0.1f, 100.0f);
+	glm::mat4 view = GlobalData::camera.GetViewMatrix();
+	objectShader.setMat4("projection", projection);
+	objectShader.setMat4("view", view);
 	// we now draw as many light bulbs as we have point lights.
 	glBindVertexArray(*lightVao);
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, transform.position);
 	model = glm::scale(model, glm::vec3(0.5f)); // Make it a smaller cube
-	shader.setMat4("model", model);
+	objectShader.setMat4("model", model);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);*/
+	glBindVertexArray(0);
 }

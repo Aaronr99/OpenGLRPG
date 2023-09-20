@@ -21,7 +21,14 @@ struct Transform
 
 	Transform() {
 		position = glm::vec3(0.0f);
-		rotation = glm::vec3(1.0f);
+		rotation = glm::vec3(0.0f);
+		scale = glm::vec3(1.0f);
+		Actualize();
+	}
+
+	Transform(const glm::vec3& position) {
+		this->position = position;
+		rotation = glm::vec3(0.0f);
 		scale = glm::vec3(1.0f);
 		Actualize();
 	}
