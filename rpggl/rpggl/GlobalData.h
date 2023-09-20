@@ -11,6 +11,7 @@ namespace GlobalData
     extern const unsigned int SCR_HEIGHT;
     extern Camera camera;
     extern InputManager inputManager;
+    extern float deltaTime;
 }
 
 

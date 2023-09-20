@@ -28,7 +28,7 @@ struct CameraManager
 		horizontalAngle = 0.0f;
 	}
 
-	void Update(float deltaTime);
+	void Update();
 	void Render();
 };
 

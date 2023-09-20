@@ -26,7 +26,6 @@ bool firstMouse = true;
 const int TICKS_PER_SECOND = 60;
 const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
 const int MAX_FRAMESKIP = 10;
-float deltaTime;
 
 bool game_is_running = true;
 
@@ -116,6 +115,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 	Shader lightCubeShader("Shaders/LightVertex.glsl", "Shaders/LightFragment.glsl");
 	Shader colorShader("Shaders/Vertex.glsl", "Shaders/Fragment.glsl");
+
 	Model ourModel("Visuals/SimpleCharacter/simpleCharacter.obj");
 	Renderer renderer(ourModel, colorShader);
 	Transform transform(glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(2.5f));
@@ -156,7 +156,7 @@ int main()
 		loops = 0;
 
 		auto currentFrameTime = std::chrono::high_resolution_clock::now();
-		deltaTime = std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
+		GlobalData::deltaTime = std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
 		lastFrameTime = currentFrameTime;
 
 		colorShader.use();
@@ -173,7 +173,7 @@ int main()
 		// Update
 		while (std::chrono::high_resolution_clock::now() > next_game_tick && loops < MAX_FRAMESKIP) {
 			mainCharacter->Update();
-			cameraManager.Update(deltaTime);
+			cameraManager.Update();
 			next_game_tick += std::chrono::milliseconds(SKIP_TICKS);
 			loops++;
 		}
