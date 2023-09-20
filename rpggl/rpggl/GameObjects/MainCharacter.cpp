@@ -5,37 +5,49 @@ glm::vec3 NormalizeToOneComponent(const glm::vec3& inputVec3);
 glm::vec3 ObtainLookRotation(glm::vec3 from, glm::vec3 to);
 
 void MainCharacter::Update() {
-	glm::vec3 previousPos = transform.position;
 
-	glm::vec3 front = NormalizeToOneComponent(camera->Front);
-	glm::vec3 right = NormalizeToOneComponent(camera->Right);
+	if (isMoving)
+	{
+		if (glm::distance(transform.position, targetPos) > 0.05f)
+		{
+			glm::vec3 direction = transform.position - targetPos;
+			transform.Move(glm::mix(transform.position, targetPos, 12.5f * GlobalData::deltaTime));
+		}
+		else if ((glm::distance(transform.position, targetPos) <= 0.05f))
+		{
+			isMoving = false;
+			transform.Move(targetPos);
+		}
+		return;
+	}
 
-	if (GlobalData::inputManager.GetKeyDown(GLFW_KEY_W))
+	bool wMovement = GlobalData::inputManager.GetKeyDown(GLFW_KEY_W);
+	bool sMovement = GlobalData::inputManager.GetKeyDown(GLFW_KEY_S);
+	bool aMovement = GlobalData::inputManager.GetKeyDown(GLFW_KEY_A);
+	bool dMovement = GlobalData::inputManager.GetKeyDown(GLFW_KEY_D);
+
+	if (wMovement || sMovement || aMovement || dMovement)
 	{
-		transform.Move(previousPos + front);
-		DebugPosition(transform.position);
-		glm::vec3 eulerRotation = ObtainLookRotation(previousPos, transform.position);
-		transform.Rotate(-eulerRotation);
-	}
-	if (GlobalData::inputManager.GetKeyDown(GLFW_KEY_S))
-	{
-		transform.Move(previousPos - front);
-		DebugPosition(transform.position);
-		glm::vec3 eulerRotation = ObtainLookRotation(previousPos, transform.position);
-		transform.Rotate(-eulerRotation);
-	}
-	if (GlobalData::inputManager.GetKeyDown(GLFW_KEY_A))
-	{
-		transform.Move(previousPos - right);
-		DebugPosition(transform.position);
-		glm::vec3 eulerRotation = ObtainLookRotation(previousPos, transform.position);
-		transform.Rotate(-eulerRotation);
-	}
-	if (GlobalData::inputManager.GetKeyDown(GLFW_KEY_D))
-	{
-		transform.Move(previousPos + right);
-		DebugPosition(transform.position);
-		glm::vec3 eulerRotation = ObtainLookRotation(previousPos, transform.position);
+		glm::vec3 front = NormalizeToOneComponent(camera->Front);
+		glm::vec3 right = NormalizeToOneComponent(camera->Right);
+		isMoving = true;
+		if (wMovement)
+		{
+			targetPos = transform.position + front;
+		}
+		else if (sMovement)
+		{
+			targetPos = transform.position - front;
+		}
+		else if (aMovement)
+		{
+			targetPos = transform.position - right;
+		}
+		else if (dMovement)
+		{
+			targetPos = transform.position + right;			
+		}
+		glm::vec3 eulerRotation = ObtainLookRotation(transform.position, targetPos);
 		transform.Rotate(-eulerRotation);
 	}
 }
