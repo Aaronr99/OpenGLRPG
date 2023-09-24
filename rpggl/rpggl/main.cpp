@@ -117,7 +117,6 @@ int main()
 	}
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -195,11 +194,11 @@ int main()
 		fontLoader->RenderText("Test text", 540.0f, 570.0f, 0.5f, glm::vec3(0.8f, 0.1f, 0.1f));
 
 		colorShader.use();
-
+		glEnable(GL_CULL_FACE);
 		cameraManager.Render();
 		mainCharacter->Render();
 		grid.DrawGrid(colorShader);
-
+		glDisable(GL_CULL_FACE);
 		lightCube.Render();
 
 		glfwSwapBuffers(window);
