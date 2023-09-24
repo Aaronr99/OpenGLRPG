@@ -94,7 +94,7 @@ int main()
 {
 	SetupOpenGL();
 
-	GLFWwindow* window = glfwCreateWindow(GlobalData::SCR_WIDTH, GlobalData::SCR_HEIGHT, "Unity Destroyer", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(GlobalData::SCR_WIDTH, GlobalData::SCR_HEIGHT, "Grid engine", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -192,7 +192,7 @@ int main()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		fontLoader->RenderText("Unity Destroying", 540.0f, 570.0f, 0.5f, glm::vec3(0.8f, 0.1f, 0.1f));
+		fontLoader->RenderText("Test text", 540.0f, 570.0f, 0.5f, glm::vec3(0.8f, 0.1f, 0.1f));
 
 		colorShader.use();
 
