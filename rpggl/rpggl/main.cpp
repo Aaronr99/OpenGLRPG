@@ -130,6 +130,11 @@ int main()
 	Transform transform(glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(2.5f));
 	mainCharacter = std::make_unique<MainCharacter>(transform, renderer, &GlobalData::camera);
 
+	Model planeModel("Visuals/Plane.obj");
+	Renderer rendererPlane(planeModel, colorShader);
+	Transform transformPlane(glm::vec3(-0.1f), glm::vec3(0.0f), glm::vec3(10.0f, 0.1f , 10.0f));
+	GameObject planeGO(transformPlane, rendererPlane);
+
 	CameraManager cameraManager(colorShader, &mainCharacter->transform);
 
 	Grid grid(10, 10);
@@ -247,6 +252,7 @@ int main()
 		cameraManager.Render();
 		mainCharacter->Render(simpleDepthShader);
 		grid.DrawGrid(simpleDepthShader);
+		planeGO.Render(simpleDepthShader);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		glViewport(0, 0, GlobalData::SCR_WIDTH, GlobalData::SCR_HEIGHT);
@@ -255,6 +261,7 @@ int main()
 		glEnable(GL_CULL_FACE);
 		cameraManager.Render();
 		mainCharacter->Render(colorShader);
+		planeGO.Render(colorShader);
 		grid.DrawGrid(colorShader);
 
 		glDisable(GL_CULL_FACE);
