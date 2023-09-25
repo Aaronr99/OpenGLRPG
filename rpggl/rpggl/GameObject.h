@@ -67,7 +67,7 @@ struct GameObject {
 
 	virtual void Awake();
 	virtual void Update();
-	virtual void Render();
+	virtual void Render(Shader& shader);
 
 	/*void Move(glm::vec3 destiny, float time);
 	void Rotate(glm::vec3 destiny, float time);

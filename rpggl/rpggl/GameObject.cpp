@@ -38,8 +38,8 @@ void GameObject::Update()
 
 }
 
-void GameObject::Render()
+void GameObject::Render(Shader& shader)
 {
-	renderer.shader.setMat4("model", transform.matrix);
-	renderer.model.Draw(renderer.shader);
+	shader.setMat4("model", transform.matrix);
+	renderer.model.Draw(shader);
 }
