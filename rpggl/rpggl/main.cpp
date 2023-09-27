@@ -242,30 +242,33 @@ int main()
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
-
 		simpleDepthShader.use();
 		for (unsigned int i = 0; i < 6; ++i)
 			simpleDepthShader.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
 		simpleDepthShader.setFloat("far_plane", far_plane);
 		simpleDepthShader.setVec3("lightPos", lightPos);
-		glEnable(GL_CULL_FACE);
-		cameraManager.Render();
 		mainCharacter->Render(simpleDepthShader);
-		grid.DrawGrid(simpleDepthShader);
 		planeGO.Render(simpleDepthShader);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		glViewport(0, 0, GlobalData::SCR_WIDTH, GlobalData::SCR_HEIGHT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		colorShader.use();
 		glEnable(GL_CULL_FACE);
+		colorShader.use();
+		colorShader.setVec3("viewPos", GlobalData::camera.Position);
+		colorShader.setInt("shadows", true); // enable/disable shadows by pressing 'SPACE'
+		colorShader.setFloat("far_plane", far_plane);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+
 		cameraManager.Render();
 		mainCharacter->Render(colorShader);
 		planeGO.Render(colorShader);
-		grid.DrawGrid(colorShader);
+		
 
 		glDisable(GL_CULL_FACE);
 		lightCube.Render();
+		grid.DrawGrid(lightCubeShader);
 		fontLoader->RenderText("Test text", 540.0f, 570.0f, 0.5f, glm::vec3(0.8f, 0.1f, 0.1f));
 
 		glfwSwapBuffers(window);

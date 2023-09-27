@@ -36,7 +36,6 @@ struct PointLight {
 
 uniform int numPointLights;
 uniform vec3 viewPos;
-uniform vec3 lightPos;
 uniform DirLight dirLight;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform Material material;
@@ -58,7 +57,7 @@ vec3 gridSamplingDisk[20] = vec3[]
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
-float ShadowCalculation(vec3 fragPos)
+float ShadowCalculation(vec3 lightPos, vec3 fragPos)
 {
     vec3 fragToLight = fragPos - lightPos;
     float currentDepth = length(fragToLight);
@@ -95,17 +94,8 @@ void main()
     // phase 2: point lights
     for(int i = 0; i < numPointLights; i++)
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
-    
-    // calculate shadow
-    float shadow = 0;
-    if(shadows)
-    {
-        shadow = ShadowCalculation(FragPos);
-    }
-
-    vec3 lighting = (dirLight.ambient + (1.0 - shadow) * result); 
-    
-    FragColor = vec4(lighting, 1.0);
+        
+    FragColor = vec4(result, 1.0);
 }
 
 // calculates the color when using a directional light.
@@ -140,7 +130,15 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
     ambient *= attenuation;
     diffuse *= attenuation;
-    return (ambient + diffuse);
+    // calculate shadow
+    float shadow = 0;
+    if(shadows)
+    {
+        shadow = ShadowCalculation(light.position, fragPos);
+    }
+
+    vec3 lighting = ambient + (1.0 - shadow) * diffuse;
+    return lighting;
 }
 
 
