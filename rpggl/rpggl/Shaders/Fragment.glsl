@@ -43,6 +43,7 @@ uniform Material material;
 uniform samplerCube depthMap;
 uniform float far_plane;
 uniform bool shadows;
+uniform vec3 lightPos;
 
 // array of offset direction for sampling
 vec3 gridSamplingDisk[20] = vec3[]
@@ -57,7 +58,7 @@ vec3 gridSamplingDisk[20] = vec3[]
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
-float ShadowCalculation(vec3 lightPos, vec3 fragPos)
+float ShadowCalculation(vec3 fragPos)
 {
     vec3 fragToLight = fragPos - lightPos;
     float currentDepth = length(fragToLight);
@@ -134,10 +135,11 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float shadow = 0;
     if(shadows)
     {
-        shadow = ShadowCalculation(light.position, fragPos);
+        shadow = ShadowCalculation(fragPos);
     }
 
     vec3 lighting = ambient + (1.0 - shadow) * diffuse;
+
     return lighting;
 }
 

@@ -233,11 +233,10 @@ int main()
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
+		glm::vec3 lightPosition = pointLightPositions[0];
+		float previousDistance = glm::distance(mainCharacter->transform.position, lightPosition);
 		for (size_t i = 0; i < 2; i++)
 		{
-			// 0. create depth cubemap transformation matrices
-			// -----------------------------------------------
-
 			glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, near_plane, far_plane);
 			std::vector<glm::mat4> shadowTransforms;
 			glm::vec3 lightPos = pointLightPositions[i];
@@ -254,6 +253,11 @@ int main()
 			simpleDepthShader.setFloat("far_plane", far_plane);
 			simpleDepthShader.setVec3("lightPos", lightPos);
 			mainCharacter->Render(simpleDepthShader);
+			if (glm::distance(mainCharacter->transform.position, lightPos) < previousDistance)
+			{
+				lightPosition = lightPos;
+				previousDistance = glm::distance(mainCharacter->transform.position, lightPosition);
+			}
 			planeGO.Render(simpleDepthShader);
 		}
 
@@ -263,8 +267,9 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		colorShader.use();
 		colorShader.setVec3("viewPos", GlobalData::camera.Position);
-		colorShader.setInt("shadows", true); // enable/disable shadows by pressing 'SPACE'
+		colorShader.setInt("shadows", true); 
 		colorShader.setFloat("far_plane", far_plane);
+		colorShader.setVec3("lightPos", lightPosition);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 
