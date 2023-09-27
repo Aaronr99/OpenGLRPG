@@ -200,6 +200,7 @@ int main()
 		auto currentFrameTime = std::chrono::high_resolution_clock::now();
 		GlobalData::deltaTime = std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
 		lastFrameTime = currentFrameTime;
+		int fps = static_cast<int>(1.0 / GlobalData::deltaTime);
 
 		colorShader.use();
 		colorShader.setVec3("viewPos", GlobalData::camera.Position);
@@ -248,8 +249,8 @@ int main()
 			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 			glClear(GL_DEPTH_BUFFER_BIT);
 			simpleDepthShader.use();
-			for (unsigned int i = 0; i < 6; ++i)
-				simpleDepthShader.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+			for (unsigned int j = 0; j < 6; ++j)
+				simpleDepthShader.setMat4("shadowMatrices[" + std::to_string(j) + "]", shadowTransforms[j]);
 			simpleDepthShader.setFloat("far_plane", far_plane);
 			simpleDepthShader.setVec3("lightPos", lightPos);
 			mainCharacter->Render(simpleDepthShader);
@@ -263,7 +264,7 @@ int main()
 		glEnable(GL_CULL_FACE);
 		colorShader.use();
 		colorShader.setVec3("viewPos", GlobalData::camera.Position);
-		colorShader.setInt("shadows", false); // enable/disable shadows by pressing 'SPACE'
+		colorShader.setInt("shadows", true); // enable/disable shadows by pressing 'SPACE'
 		colorShader.setFloat("far_plane", far_plane);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
@@ -277,8 +278,8 @@ int main()
 		lightCube.Render();
 		lightCube2.Render();
 		grid.DrawGrid(lightCubeShader);
-		std::string fps = std::to_string(loops);
-		fontLoader->RenderText("Test text", 540.0f, 570.0f, 0.5f, glm::vec3(0.8f, 0.1f, 0.1f));
+		std::string fpsText = std::to_string(fps);
+		fontLoader->RenderText(fpsText, 540.0f, 570.0f, 0.5f, glm::vec3(0.8f, 0.1f, 0.1f));
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
