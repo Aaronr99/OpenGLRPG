@@ -224,17 +224,23 @@ int main()
 			loops++;
 		}
 
-		// Render
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		float near_plane = 1.0f;
-		float far_plane = 15.0f;
-		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-		glClear(GL_DEPTH_BUFFER_BIT);
+		float far_plane = 25.0f;
+
 		glm::vec3 lightPosition = pointLightPositions[0];
 		float previousDistance = glm::distance(mainCharacter->transform.position, lightPosition);
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		for (size_t i = 0; i < 2; i++) 
+		{
+			glm::vec3 lightPos = pointLightPositions[i];
+			if (glm::distance(mainCharacter->transform.position, lightPos) < previousDistance)
+			{
+				lightPosition = lightPos;
+				previousDistance = glm::distance(mainCharacter->transform.position, lightPosition);
+			}
+		}
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		for (size_t i = 0; i < 2; i++)
 		{
 			glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, near_plane, far_plane);
@@ -252,11 +258,8 @@ int main()
 				simpleDepthShader.setMat4("shadowMatrices[" + std::to_string(j) + "]", shadowTransforms[j]);
 			simpleDepthShader.setFloat("far_plane", far_plane);
 			simpleDepthShader.setVec3("lightPos", lightPos);
-			mainCharacter->Render(simpleDepthShader);
-			if (glm::distance(mainCharacter->transform.position, lightPos) < previousDistance)
-			{
-				lightPosition = lightPos;
-				previousDistance = glm::distance(mainCharacter->transform.position, lightPosition);
+			if (lightPos == lightPosition) {
+				mainCharacter->Render(simpleDepthShader);
 			}
 			planeGO.Render(simpleDepthShader);
 		}
@@ -265,6 +268,8 @@ int main()
 
 		glViewport(0, 0, GlobalData::SCR_WIDTH, GlobalData::SCR_HEIGHT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// Render
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		colorShader.use();
 		colorShader.setVec3("viewPos", GlobalData::camera.Position);
 		colorShader.setInt("shadows", true); 
